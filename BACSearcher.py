@@ -1,11 +1,5 @@
 #!/usr/bin/env python3.6
 
-# (1) The script is set to search for homology regions in a sequence spanning 2000-3000 bp upstream of the start codon of each gene
-#   If larger native promoter regions are required, change '3000' to something larger in both lines 189 and 191
-#   If you would like to measure from the start of the 5'UTR instead, change 'coding_start' to 'self.gene.start' in both lines 189 and 191
-# (2) The script is set to report BACs that cover the gene coding region plus upstream flank, ignoring the 3'UTR
-#   If you would like to report BACs that cover the 3'UTR as well, change 'coding_end' to 'self.gene.end' in both lines 189 and 191
-        
 import argparse, os, sys, gzip
 import gffutils
 from collections import defaultdict
@@ -200,7 +194,7 @@ class Gene:
 
     def __get_plasmids(self, plasmid_pairs, plasmid_type):
         # Sort intervals overlapping plasmid by length, shortest first
-        # Return the first five plasmids that envelope the flanking region (defined in lines 189 and 191)
+        # Return the first five plasmids that envelope the flanking region (defined in lines 183 and 185)
         plasmids = []
         plasmids_added = {}
         for plasmid_pair in sorted(plasmid_pairs[self.chromosome].overlap(self.flank_start, self.flank_end), key=lambda x:(x.length())):
