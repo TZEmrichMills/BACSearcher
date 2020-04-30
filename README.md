@@ -50,17 +50,25 @@ When supplied with a GFF file via -g, BACSearcher will generate a gffutils datab
 ### 1.5 Modifications to the script
 The BACSearcher output for all 17,741 Chlamydomonas genes is provided in Supplemental Data Set 1 according to default parameters described in the Function section, above. Users can modify the script to change the length or position of the homology regions that BACSearcher reports, as well as the region that reported BACs should cover for each gene. These modifications are made by adding the additional options `-q`, `-r`, `-s`, `-t`, `-u` and `-v` to the command line before running the script.
 
-####	Modifying the lengths of the homology arms:
-By default, BACSearcher reports 5’ and 3’ homology regions for each gene that are 50 bp long. To change these lengths to a different value, `x`, the options `-q` and `-r` can be added to the command line:
-	`-q x` will change the default lengths of the reported 5’ homology regions to an integer, `x` bp.
-	`-r x` will change the default length of the 3’ homology region to an integer, `x` bp.
-We recommend using the same values for `-q` and `-r`.
+1. Modifying the lengths of the homology arms:
 
-####	Modifying the size of the upstream native promoter region:
-By default, BACSearcher searches for 5’ homology regions 2000-3000 bp upstream of the start codon. To change the searched region, the default maximum flank of 3000 can be changed to a different value, `x`, by adding the option, `-s`, to the command line: 
-	`-s x` will direct the script to search for suitable homology regions in the 1000 bp downstream of an upstream position, `x` bp. For example, if `x=5000` the script will search for regions between 4000 and 5000 bp upstream of the start codon of each gene.
-If you would like to measure from the start of the 5’UTR instead of from the start codon, the option `-u` can be added to the command line:
-	`-u` will direct the script to search for homology regions in the region defined by `-s` but measured from the 5’UTR instead of the start codon. If `-u` is used but `-s` is left undefined, the script will search for homology regions 2000-3000 bp upstream of the 5’UTR.
+...By default, BACSearcher reports 5’ and 3’ homology regions for each gene that are 50 bp long. To change these lengths to a different value, `x`, the options `-q` and `-r` can be added to the command line:
+
+...`-q x` will change the default lengths of the reported 5’ homology regions to an integer, `x` bp.
+
+...`-r x` will change the default length of the 3’ homology region to an integer, `x` bp.
+
+...We recommend using the same values for `-q` and `-r`.
+
+2. Modifying the size of the upstream native promoter region:
+
+...By default, BACSearcher searches for 5’ homology regions 2000-3000 bp upstream of the start codon. To change the searched region, the default maximum flank of 3000 can be changed to a different value, `x`, by adding the option, `-s`, to the command line:
+
+...`-s x` will direct the script to search for suitable homology regions in the 1000 bp downstream of an upstream position, `x` bp. For example, if `x=5000` the script will search for regions between 4000 and 5000 bp upstream of the start codon of each gene.
+
+...If you would like to measure from the start of the 5’UTR instead of from the start codon, the option `-u` can be added to the command line:
+
+...`-u` will direct the script to search for homology regions in the region defined by `-s` but measured from the 5’UTR instead of the start codon. If `-u` is used but `-s` is left undefined, the script will search for homology regions 2000-3000 bp upstream of the 5’UTR.
 
 ####	Modifying the BACs reported for each gene:
 By default, the script is set to report BACs that cover the coding region plus the upstream flank for each gene, ignoring the 3'UTR. The upstream flank is defined by `-s` and `-u` (see (2), above) with a default value of 3000 bp upstream from the start codon. If you would like to add a downstream flank of length `x` bp that any reported BACs should also cover, the option `-t` can be added to the command line:
