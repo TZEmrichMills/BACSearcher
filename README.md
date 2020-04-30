@@ -35,12 +35,12 @@ BACSearcher can be initiated from the command line using the following options:
 Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii_281_v5.0.fa.gz` refers to precursor file II; `Creinhardtii_281_v5.5.gene.gff3.gz` refers to precursor file III; `Gene_shortlist.txt` refers to precursor file IV; and `BAC_wells.txt` refers to precursor file V. `Chlamydomonas_BACSearcher_results` is the output file name. 
 
 ### 1.4 Required precursor files
-* I:  TSV file containing the coordinates of the start and end of each valid BAC in the library. BACs are included as valid if their start and end sequences are mapped to the same chromosome and are in the correct orientation, (i.e., one end on each strand). This file is provided in the Supplemental Code ZIP folder as BACs_fosmids.pairs.tsv, is reproduced in Supplemental Data Set 5 and is also available from the GitHub repository (see Code availability section above).
-* II:	Zipped FASTA file (.fa.gz extension) containing the gene sequences for all Chlamydomonas nuclear genes.
-* III:	Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
-* IV:	(Optional) TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by -o (see Example usage, above).
-* V:	TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the Supplemental Code ZIP folder as BAC_wells.txt and is also available from the GitHub repository (see Code availability section).
-...VI.	(Optional) DB file generated from III using the BACSearcher script, which can be used in place of III in future runs. 
+* I.    TSV file containing the coordinates of the start and end of each valid BAC in the library. BACs are included as valid if their start and end sequences are mapped to the same chromosome and are in the correct orientation, (i.e., one end on each strand). This file is provided in the Supplemental Code ZIP folder as BACs_fosmids.pairs.tsv, is reproduced in Supplemental Data Set 5 and is also available from the GitHub repository (see Code availability section above).
+* II.	Zipped FASTA file (.fa.gz extension) containing the gene sequences for all Chlamydomonas nuclear genes.
+* III.	Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
+* IV.	(Optional) TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by -o (see Example usage, above).
+* V.	TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the Supplemental Code ZIP folder as BAC_wells.txt and is also available from the GitHub repository (see Code availability section).
+* VI.	(Optional) DB file generated from III using the BACSearcher script, which can be used in place of III in future runs. 
 
 Genome FASTA and gene annotation GFF files (precursors II and III) are available for download from Phytozome, entitled Creinhardtii_281_v5.0.fa.gz and Creinhardtii_281_v5.5.gene.gff3.gz. The output provided in Supplemental Data Set 1 used precursor files II and III downloaded from Phytozome V12. 
 
@@ -52,23 +52,23 @@ The BACSearcher output for all 17,741 Chlamydomonas genes is provided in Supplem
 
 1. Modifying the lengths of the homology arms:
 
-...By default, BACSearcher reports 5’ and 3’ homology regions for each gene that are 50 bp long. To change these lengths to a different value, `x`, the options `-q` and `-r` can be added to the command line:
+   By default, BACSearcher reports 5’ and 3’ homology regions for each gene that are 50 bp long. To change these lengths to a different value, `x`, the options `-q` and `-r` can be added to the command line:
 
-...`-q x` will change the default lengths of the reported 5’ homology regions to an integer, `x` bp.
+   `-q x` will change the default lengths of the reported 5’ homology regions to an integer, `x` bp.
 
-...`-r x` will change the default length of the 3’ homology region to an integer, `x` bp.
+   `-r x` will change the default length of the 3’ homology region to an integer, `x` bp.
 
-...We recommend using the same values for `-q` and `-r`.
+   We recommend using the same values for `-q` and `-r`.
 
 2. Modifying the size of the upstream native promoter region:
 
-...By default, BACSearcher searches for 5’ homology regions 2000-3000 bp upstream of the start codon. To change the searched region, the default maximum flank of 3000 can be changed to a different value, `x`, by adding the option, `-s`, to the command line:
+   By default, BACSearcher searches for 5’ homology regions 2000-3000 bp upstream of the start codon. To change the searched region, the default maximum flank of 3000 can be changed to a different value, `x`, by adding the option, `-s`, to the command line:
+   
+   `-s x` will direct the script to search for suitable homology regions in the 1000 bp downstream of an upstream position, `x` bp. For example, if `x=5000` the script will search for regions between 4000 and 5000 bp upstream of the start codon of each gene.
 
-...`-s x` will direct the script to search for suitable homology regions in the 1000 bp downstream of an upstream position, `x` bp. For example, if `x=5000` the script will search for regions between 4000 and 5000 bp upstream of the start codon of each gene.
+   If you would like to measure from the start of the 5’UTR instead of from the start codon, the option `-u` can be added to the command line:
 
-...If you would like to measure from the start of the 5’UTR instead of from the start codon, the option `-u` can be added to the command line:
-
-...`-u` will direct the script to search for homology regions in the region defined by `-s` but measured from the 5’UTR instead of the start codon. If `-u` is used but `-s` is left undefined, the script will search for homology regions 2000-3000 bp upstream of the 5’UTR.
+   `-u` will direct the script to search for homology regions in the region defined by `-s` but measured from the 5’UTR instead of the start codon. If `-u` is used but `-s` is left undefined, the script will search for homology regions 2000-3000 bp upstream of the 5’UTR.
 
 ####	Modifying the BACs reported for each gene:
 By default, the script is set to report BACs that cover the coding region plus the upstream flank for each gene, ignoring the 3'UTR. The upstream flank is defined by `-s` and `-u` (see (2), above) with a default value of 3000 bp upstream from the start codon. If you would like to add a downstream flank of length `x` bp that any reported BACs should also cover, the option `-t` can be added to the command line:
