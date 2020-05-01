@@ -31,12 +31,24 @@ BACSearcher can be initiated from the command line using the following options:
 Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii_281_v5.0.fa.gz` refers to precursor file II; `Creinhardtii_281_v5.5.gene.gff3.gz` refers to precursor file III; `Gene_shortlist.txt` refers to precursor file IV; and `BAC_wells.txt` refers to precursor file V. `Chlamydomonas_BACSearcher_results` is the output file name. 
 
 ### 1.4. Required precursor files
-* I.    TSV file containing the coordinates of the start and end of each valid BAC in the library. The file contains start and end coordinates for all valid BACs and fosmids within the Chlamydomonas BAC library, as well as the lengths of each. BACs are identified by a PTQ number and fosmids are identified by a VTP number. Plasmids are defined as valid if their start and end sequences are mapped to the same chromosome, with one end mapped to the sense strand and the other to the anti-sense strand. These criteria exclude 3179 of the 11,676 BACs (27.2%) and 20,696 of the 56,276 fosmids (36.8%) that are annotated against the Chlamydomonas genome (v5.5). Due to the way the BACs have been annotated against the genome, some valid plasmids have more than two ends mapped to the same chromosome and so are represented more than once. This file is provided in the repository as [BACs_fosmids.pairs.tsv](../master/BACs_fosmids.pairs.tsv).
-* II.	Zipped FASTA file (.fa.gz extension) containing the gene sequences for all Chlamydomonas nuclear genes.
-* III.	Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
-* IV.	(Optional) TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by `-o` (see Example usage, above).
-* V.	TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the repository as [BAC_wells.txt](../master/BAC_wells.txt).
-* VI.	(Optional) DB file generated from III using the BACSearcher script, which can be used in place of III in future runs. 
+* Precursor file I
+
+  TSV file containing the coordinates of the start and end of each valid BAC in the library. The file contains start and end coordinates for all valid BACs and fosmids within the Chlamydomonas BAC library, as well as the lengths of each. BACs are identified by a PTQ number and fosmids are identified by a VTP number. Plasmids are defined as valid if their start and end sequences are mapped to the same chromosome, with one end mapped to the sense strand and the other to the anti-sense strand. These criteria exclude 3179 of the 11,676 BACs (27.2%) and 20,696 of the 56,276 fosmids (36.8%) that are annotated against the Chlamydomonas genome (v5.5). Due to the way the BACs have been annotated against the genome, some valid plasmids have more than two ends mapped to the same chromosome and so are represented more than once. This file is provided in the repository as [BACs_fosmids.pairs.tsv](../master/BACs_fosmids.pairs.tsv).
+* Precursor file II	
+
+  Zipped FASTA file (.fa.gz extension) containing the gene sequences for all Chlamydomonas nuclear genes.
+* Precursor file III
+
+  Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
+* Precursor file IV
+
+  (Optional) TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by `-o` (see Example usage, above).
+* Precursor file V
+
+  TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the repository as [BAC_wells.txt](../master/BAC_wells.txt).
+* Precursor file VI
+
+  (Optional) DB file generated from III using the BACSearcher script, which can be used in place of III in future runs. 
 
 Genome FASTA and gene annotation GFF files (precursors II and III) are available for download from Phytozome, entitled Creinhardtii_281_v5.0.fa.gz and Creinhardtii_281_v5.5.gene.gff3.gz. The output provided in Supplemental Data Set 1 used precursor files II and III downloaded from Phytozome V12. 
 
