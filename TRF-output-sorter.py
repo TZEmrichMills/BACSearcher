@@ -8,11 +8,11 @@ Tested in python3.7
 
 Usage:
 
-Tandem Repeats Finder (Benson, 1999) outputs a data file containing lists of repeats 
-for every entry (e.g., gene sequence supplied in fasta format). An example output that
-demonstrates the format of this data file can be seen below. 
-In this example, Sequence1 was found to contain 9 repeats, each with accompanying
-analysis information (see https://tandem.bu.edu/trf/trf.definitions.html for details).
+Tandem Repeats Finder (Benson, 1999) outputs a data file containing lists of repeats for every entry 
+(e.g., gene sequence supplied in fasta format). 
+An example output that demonstrates the format of this data file can be seen below. 
+In this example, Sequence1 was found to contain 9 repeats, each with accompanying analysis information 
+(see https://tandem.bu.edu/trf/trf.definitions.html for details).
 
     Sequence: Sequence1
     
