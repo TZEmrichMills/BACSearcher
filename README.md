@@ -99,15 +99,15 @@ If you would like to measure the downstream flank from the end of the 3’UTR in
 
 Developed by Tom Emrich-Mills
 
-### 2.1. TRF-output-sorter.txt
+### 2.1. [TRF-output-sorter.txt](../master/TRF-output-sorter.txt)
 Python script intended for processing the output information produced by Tandem Repeats Finder [(Benson, 1999)](https://www.ncbi.nlm.nih.gov/pubmed/9862982) into CSV format. 
 Usage instructions are included at the top of the script.
 
-### 2.2. Check_primers-output-sorter.txt
+### 2.2. [Check_primers-output-sorter.txt](../master/Check_primers-output-sorter.txt)
 Python script intended to enable quick analysis of the output from the Primer3 check_primers module [(Rozen and Skaletsky, 2000)](https://www.ncbi.nlm.nih.gov/pubmed/10547847). 
 Usage instructions are included at the top of the script.
 
-### 2.3. WindowMasker-output-sorter.txt
+### 2.3. [WindowMasker-output-sorter.txt](../master/WindowMasker-output-sorter.txt)
 Python script intended for counting the number of repeat sequences masked by WindowMasker [(Morgulis et al., 2006)](https://www.ncbi.nlm.nih.gov/pubmed/16287941).
 The script takes the interval TXT file produced by WindowMasker and outputs a CSV file containing the number or repeats per input sequence. Usage instructions are included at the top of the script.
 
