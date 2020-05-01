@@ -1,5 +1,52 @@
 #!/usr/bin/env python3
 
+"""
+BACSearcher
+@author John W. Davey
+Associated repository: https://github.com/TZEmrichMills/Chlamydomonas_recombineering
+For additional usage information, see README.md
+
+Usage:
+
+BACSearcher can be initiated from the command line using options -p, -f, -g, -l, -w and -o.
+Modifications can be made to the default parameters using additional options -q, -r, -s, -t, -u, and -v.
+Default usage example:
+
+./BACSearcher.py -p BACs_fosmids.pairs.tsv -f Creinhardtii_281_v5.0.fa.gz -g Creinhardtii_281_v5.5.gene.gff3.gz -l Gene_shortlist.txt -w Bac_wells.txt -o Chlamydomonas_BACSearcher_results
+
+BACs_fosmids.pairs.tsv refers to precursor file I (below); 
+Creinhardtii_281_v5.0.fa.gz refers to precursor file II; 
+Creinhardtii_281_v5.5.gene.gff3.gz refers to precursor file III; 
+Gene_shortlist.txt refers to precursor file IV; and
+BAC_wells.txt refers to precursor file V.
+Chlamydomonas_BACSearcher_results is an output file name. 
+
+Precursor files:
+
+Precursor file I: TSV file containing the coordinates of the start and end of each valid BAC in the library. BACs are included as valid if their start and end sequences are mapped to the same chromosome and are in the correct orientation, (i.e., one end on each strand).
+Precursor file II: Zipped FASTA file (.fa.gz extension) containing the gene sequences for all Chlamydomonas nuclear genes.
+Precursor file III: Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
+Precursor file IV: (Optional) TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by -o (see Example usage, above).
+Precursor file V: TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the Supplemental Code ZIP folder as BAC_wells.txt and is also available from the GitHub repository (see Code availability section).
+Precursor file VI: (Optional) DB file generated from III during the first running of the script, which can be used in place of III in future runs. 
+
+I and V are available in the repository as BACs_fosmids.pairs.tsv and BAC_wells.txt.
+II and III are available for download from Phytozome V12 entitled Creinhardtii_281_v5.0.fa.gz and Creinhardtii_281_v5.5.gene.gff3.gz. 
+
+Note: When supplied with a GFF file via -g, BACSearcher will generate a gffutils database for the GFF file (precursor file VI). 
+BACSearcher can also use this database directly with the -d option, saving the effort of regenerating the database.
+
+Modifications to the defaults:
+
+-q followed by an integer, x, will change the default lengths of the reported 5’ homology regions to an integer, x bp.
+-r followed by an integer, x, will change the default length of the 3’ homology region to an integer, x bp.
+-s followed by an integer, x, will direct the script to search for suitable homology regions in the 1000 bp downstream of an upstream position, x bp. For example, if x=5000 the script will search for regions between 4000 and 5000 bp upstream of the start codon of each gene.
+-u will direct the script to search for homology regions in the region defined by -s but measured from the 5’UTR instead of the start codon. 
+-t followed by an integer, x, will direct the script to report only those BACs that cover x bp downstream from the stop codon of each gene.
+-v will direct the script to report BACs that cover a downstream region defined by -t but measured from the 3’UTR instead of from the stop codon of each gene. 
+
+"""
+
 import argparse, os, sys, gzip
 import gffutils
 from collections import defaultdict
