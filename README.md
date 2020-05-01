@@ -32,7 +32,7 @@ BACSearcher can be initiated from the command line using the following options:
 Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii_281_v5.0.fa.gz` refers to precursor file II; `Creinhardtii_281_v5.5.gene.gff3.gz` refers to precursor file III; `Gene_shortlist.txt` refers to precursor file IV; and `BAC_wells.txt` refers to precursor file V. `Chlamydomonas_BACSearcher_results` is the output file name. 
 
 ### 1.4. Required precursor files
-* I.    TSV file containing the coordinates of the start and end of each valid BAC in the library. BACs are included as valid if their start and end sequences are mapped to the same chromosome and are in the correct orientation, (i.e., one end on each strand).
+* I.    TSV file containing the coordinates of the start and end of each valid BAC in the library. BACs are included as valid if their start and end sequences are mapped to the same chromosome and are in the correct orientation, (i.e., one end on each strand). This file is provided in the repository as [BACs_fosmids.pairs.tsv](../master/BACs_fosmids.pairs.tsv).
 * II.	Zipped FASTA file (.fa.gz extension) containing the gene sequences for all Chlamydomonas nuclear genes.
 * III.	Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
 * IV.	(Optional) TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by `-o` (see Example usage, above).
