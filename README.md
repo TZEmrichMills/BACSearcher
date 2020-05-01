@@ -36,7 +36,7 @@ Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii
 * II.	Zipped FASTA file (.fa.gz extension) containing the gene sequences for all Chlamydomonas nuclear genes.
 * III.	Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
 * IV.	(Optional) TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by `-o` (see Example usage, above).
-* V.	TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the repository as [BAC_wells.txt](../TZEmrichMills/Chlamydomonas_recombineering/BAC_wells.txt ).
+* V.	TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the repository as [BAC_wells.txt](../blob/master/BAC_wells.txt).
 * VI.	(Optional) DB file generated from III using the BACSearcher script, which can be used in place of III in future runs. 
 
 Genome FASTA and gene annotation GFF files (precursors II and III) are available for download from Phytozome, entitled Creinhardtii_281_v5.0.fa.gz and Creinhardtii_281_v5.5.gene.gff3.gz. The output provided in Supplemental Data Set 1 used precursor files II and III downloaded from Phytozome V12. 
