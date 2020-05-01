@@ -38,9 +38,9 @@ BACSearcher can also use this database directly with the -d option, saving the e
 
 Modifications to the defaults:
 
--q followed by an integer, x, will change the default lengths of the reported 5’ homology regions to an integer, x bp.
--r followed by an integer, x, will change the default length of the 3’ homology region to an integer, x bp.
--s followed by an integer, x, will direct the script to search for suitable homology regions in the 1000 bp downstream of an upstream position, x bp. For example, if x=5000 the script will search for regions between 4000 and 5000 bp upstream of the start codon of each gene.
+-q followed by an integer, x, will change the default lengths of the reported 5’ homology regions to x bp.
+-r followed by an integer, x, will change the default length of the 3’ homology region to x bp.
+-s followed by an integer, x, will direct the script to search for suitable homology regions in the 1000 bp downstream of an upstream position, x bp, measured from the start codon by default.
 -u will direct the script to search for homology regions in the region defined by -s but measured from the 5’UTR instead of the start codon. 
 -t followed by an integer, x, will direct the script to report only those BACs that cover x bp downstream from the stop codon of each gene.
 -v will direct the script to report BACs that cover a downstream region defined by -t but measured from the 3’UTR instead of from the stop codon of each gene. 
