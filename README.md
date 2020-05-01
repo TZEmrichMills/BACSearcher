@@ -47,13 +47,13 @@ Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii
 - Precursor file III
 
   Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
-- Precursor file IV (optional)
+- *Precursor file IV (Optional)*
 
   TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by `-o` (see Example usage, above).
 - Precursor file V
 
   TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the repository as [BAC_wells.txt](../master/BAC_wells.txt).
-- Precursor file VI (optional)
+- *Precursor file VI (Optional)*
 
   DB file generated from III using the BACSearcher script, which can be used in place of III in future runs. 
 
