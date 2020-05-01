@@ -18,11 +18,10 @@ The fosmid output file contains identical information for (1) and (2), but for (
 
 ### 1.2. Specialist python modules required
 BACSearcher has been tested using Python 3.6 and requires the following modules to be installed:
-Gffutils	      https://pypi.org/project/gffutils/
-Interval tree	  https://pypi.org/project/intervaltree/
-Biopython	      https://pypi.org/project/biopython/
-Primer3-py	    https://pypi.org/project/primer3-py/
-
+[Gffutils](https://pypi.org/project/gffutils/)
+[Interval tree](https://pypi.org/project/intervaltree/)
+[Biopython](https://pypi.org/project/biopython/)
+[Primer3-py](https://pypi.org/project/primer3-py/)
 
 ### 1.3. Example usage
 BACSearcher can be initiated from the command line using the following options:
@@ -32,7 +31,7 @@ BACSearcher can be initiated from the command line using the following options:
 Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii_281_v5.0.fa.gz` refers to precursor file II; `Creinhardtii_281_v5.5.gene.gff3.gz` refers to precursor file III; `Gene_shortlist.txt` refers to precursor file IV; and `BAC_wells.txt` refers to precursor file V. `Chlamydomonas_BACSearcher_results` is the output file name. 
 
 ### 1.4. Required precursor files
-* I.    TSV file containing the coordinates of the start and end of each valid BAC in the library. BACs are included as valid if their start and end sequences are mapped to the same chromosome and are in the correct orientation, (i.e., one end on each strand). This file is provided in the repository as [BACs_fosmids.pairs.tsv](../master/BACs_fosmids.pairs.tsv).
+* I.    TSV file containing the coordinates of the start and end of each valid BAC in the library. The file contains start and end coordinates for all valid BACs and fosmids within the Chlamydomonas BAC library, as well as the lengths of each. BACs are identified by a PTQ number and fosmids are identified by a VTP number. Plasmids are defined as valid if their start and end sequences are mapped to the same chromosome, with one end mapped to the sense strand and the other to the anti-sense strand. These criteria exclude 3179 of the 11,676 BACs (27.2%) and 20,696 of the 56,276 fosmids (36.8%) that are annotated against the Chlamydomonas genome (v5.5). Due to the way the BACs have been annotated against the genome, some valid plasmids have more than two ends mapped to the same chromosome and so are represented more than once. This file is provided in the repository as [BACs_fosmids.pairs.tsv](../master/BACs_fosmids.pairs.tsv).
 * II.	Zipped FASTA file (.fa.gz extension) containing the gene sequences for all Chlamydomonas nuclear genes.
 * III.	Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
 * IV.	(Optional) TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by `-o` (see Example usage, above).
@@ -88,29 +87,19 @@ Associated manuscript: A recombineering pipeline to clone large and complex gene
 
 BACs_fosmids.pairs.tsv
 
-Precursor file required by BACSearcher to predict BAC coverage for each gene.
-For usage instructions, see Supplemental Method 2A; this file corresponds to precursor file I.
-The file contains start and end coordinates for all valid BACs and fosmids within the Chlamydomonas BAC library, as well as the lengths of each. 
-BACs are identified by a PTQ number and fosmids are identified by a VTP number. 
-Plasmids are defined as valid if their start and end sequences are mapped to the same chromosome, with one end mapped to the sense strand and the other to the anti-sense strand. 
-These criteria exclude 3179 of the 11,676 BACs (27.2%) and 20,696 of the 56,276 fosmids (36.8%) that are annotated against the Chlamydomonas genome (v5.5). 
-Due to the way the BACs have been annotated against the genome, some valid plasmids have more than two ends mapped to the same chromosome and so are represented more than once (see Supplemental Method 2B for additional information).
-This file is available from the GitHub repository associated with this publication at the following link:
+
 
 # 2. Output sorters for genome analysis programs
 
 ## 2.1. Check_primers-output-sorter.txt
-
 Python script intended to enable quick analysis of the output from the Primer3 check_primers module (Rozen and Skaletsky, 2000). 
 Usage instructions are included at the top of the script.
 
 ## 2.2. TRF-output-sorter.txt
-
 Python script intended for processing the output information produced by Tandem Repeats Finder (Benson, 1999) into CSV format. 
 Usage instructions are included at the top of the script.
 
 ## 2.3. WindowMasker-output-sorter.txt
-
 Python script intended for counting the number of repeat sequences masked by WindowMasker (Morgulis et al., 2006).
 The script takes the interval TXT file produced by WindowMasker and outputs a CSV file containing the number or repeats per input sequence. Usage instructions are included at the top of the script.
 
