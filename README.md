@@ -18,7 +18,7 @@ BACSearcher considers all or a subset of Chlamydomonas genes and provides three 
 3. The script reports the five smallest BACs containing each gene where available. BACs are reported if they cover the region spanning from 3000 bp upstream of the gene to the stop codon. An exception is made in cases where this region extends beyond the ends of a chromosome or scaffold, in which case the region is altered so that it starts/ends at the first/last position of the chromosome/scaffold. These parameters can be modified by the user so that BACs are only reported if, for example, the BAC sequence covers a larger 5’ flanking region, or also covers the 3’UTR of the gene of interest. Instructions to make these modifications to the script are detailed below. 
 
 Two outputs are generated after each run of the script, one for BAC coverage and one for fosmid coverage of each gene. BAC and fosmid data are taken from the version 5.5 annotation of the Chlamydomonas genome. 
-The fosmid output file contains identical information for (1) and (2), but for (3) the BAC-specific information is replaced by fosmid-specific information. Fosmid plate/well coordinates are not provided. The BAC output for all 17,741 genes in the genome is provided in Supplemental Data Set 1 of the associated manuscript.
+The fosmid output file contains identical information for points 1. and 2. (above), but for point 3. the BAC-specific information is replaced by fosmid-specific information. Fosmid plate/well coordinates are not provided. The BAC output for all 17,741 genes in the genome is provided in Supplemental Data Set 1 of the associated manuscript.
 
 ### 1.2. Specialist python modules required
 BACSearcher has been tested using Python 3.6 and requires the following modules to be installed:
