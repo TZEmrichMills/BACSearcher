@@ -2,11 +2,11 @@ This repository contains two sets of genome analysis tools for the manuscript "A
 
 
 # 1. BACSearcher
-Developed by [John W. Davey](https://github.com/johnomics) and Tom Emrich-Mills
-
 BACSearcher is a genome analysis python tool to facilitate easy recombineering of Chlamydomonas genes from BACs.
 
-Script: [BACSearcher.py](../master/BACSearcher.py)
+Developed by [John W. Davey](https://github.com/johnomics) and Tom Emrich-Mills
+
+Script: [BACSearcher.py](../master/BACSearcher.py) written by John W. Davey
 
 ### 1.1. Function
 BACSearcher considers all or a subset of Chlamydomonas genes and provides three key pieces of information useful for recombineering a gene of interest using the pipeline detailed in Supplementary Method 1 of the associated manuscript:
