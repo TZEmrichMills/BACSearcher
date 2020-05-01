@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 
 import argparse, os, sys, gzip
 import gffutils
@@ -20,6 +20,12 @@ parser=argparse.ArgumentParser(description='''
     -f genome FASTA
     -w wells
     -n num_results
+    -q fiveprime_homology_length
+    -r threeprime_homology_length
+    -s fiveprime_flank length
+    -t threeprime_flank_length
+    -u fiveprime_utr_flank
+    -v threeprime_utr_flank
     ''')
 
 parser.add_argument('-p', '--plasmidpairs', type=str, required=True)
@@ -29,6 +35,12 @@ parser.add_argument('-g', '--genegff', type=str)
 parser.add_argument('-d', '--genedatabase', type=str)
 parser.add_argument('-l', '--genelist', type=str)
 parser.add_argument('-n', '--num_results', type=int, default=5)
+parser.add_argument('-q', '--fiveprime_homology_length', type=int, default=50)
+parser.add_argument('-r', '--threeprime_homology_length', type=int, default=50)
+parser.add_argument('-s', '--fiveprime_flank_length', type=int, default=3000)
+parser.add_argument('-t', '--threeprime_flank_length', type=int, default=0)
+parser.add_argument('-u', '--fiveprime_utr_flank', action='store_true')
+parser.add_argument('-v', '--threeprime_utr_flank', action='store_true')
 parser.add_argument('-o', '--outputstub', type=str, default="test")
 
 args = parser.parse_args()
@@ -148,13 +160,22 @@ def mask_dinucleotides(flank):
     return flank
 
 class Gene:
-    def __init__(self, gene_name, gene_db, bacs, fosmids, wells, num_results):
+    def __init__(self, gene_name, gene_db, bacs, fosmids, wells, num_results, \
+                 fiveprime_flank_length, threeprime_flank_length, \
+                 fiveprime_utr_flank, threeprime_utr_flank, \
+                 fiveprime_homology_length, threeprime_homology_length):
 
         self.gene_name = gene_name
         self.gene     = gene_db[self.gene_name]
         self.chromosome = self.gene.seqid
         self.strand = self.gene.strand
         self.num_results = num_results
+        self.fiveprime_flank_length = fiveprime_flank_length
+        self.threeprime_flank_length = threeprime_flank_length
+        self.fiveprime_utr_flank = fiveprime_utr_flank
+        self.threeprime_utr_flank = threeprime_utr_flank
+        self.fiveprime_homology_length = fiveprime_homology_length
+        self.threeprime_homology_length = threeprime_homology_length
 
         self.coding_start, self.coding_end, self.flank_start, self.flank_end = self.__get_location(gene_db)
 
@@ -179,10 +200,16 @@ class Gene:
             if coding_end is None or cds.end > coding_end:
                 coding_end = cds.end
         
+        start_anchor, end_anchor = coding_start, coding_end
+        if self.fiveprime_utr_flank:
+            start_anchor = self.gene.start
+        if self.threeprime_utr_flank:
+            end_anchor = self.gene.end
+
         if self.strand == '+':
-            flank_start, flank_end = coding_start - 3000, coding_end + 0 # <-- Define upstream region and BAC coverage here
+            flank_start, flank_end = start_anchor - self.fiveprime_flank_length, end_anchor + self.threeprime_flank_length
         elif self.strand == '-':
-            flank_start, flank_end = coding_start - 0, coding_end + 3000 # <-- Define upstream region and BAC coverage here
+            flank_start, flank_end = start_anchor - self.threeprime_flank_length, end_anchor + self.fiveprime_flank_length
         
         if flank_start < 1:
             flank_start = 1
@@ -224,13 +251,17 @@ class Gene:
 
         flank = mask_dinucleotides(flank)
         # Find the 50bp region in the 1000bp flanking region with minimum GC, then reverse complement for ease of addition to the 5' cloning primer
-        low_gc_regions = sorted([(i+2001, Seq(str(flank[i:i+50])).reverse_complement()) for i in range(len(flank)-50) if 'N' not in flank[i:i+50]], key=lambda x:(GC(x[1]),x[0]))
+        low_gc_regions = sorted(
+          [(i+2001, Seq(str(flank[i:i+self.fiveprime_homology_length])).reverse_complement()) 
+             for i in range(len(flank)-self.fiveprime_homology_length)
+             if 'N' not in flank[i:i+self.fiveprime_homology_length]], 
+          key=lambda x:(GC(x[1]),x[0]))
 
         nonoverlaps = []
         for r in low_gc_regions:
             append = True
             for n in nonoverlaps: 
-                if n[0]-49 < r[0] < n[0]+49:
+                if n[0]-(self.fiveprime_homology_length-1) < r[0] < n[0]+(self.fiveprime_homology_length-1):
                     append = False
             if append:
                 nonoverlaps.append(r)
@@ -249,12 +280,12 @@ class Gene:
             # If gene end is 100, we want GFF positions 48-97.
             # In Python, this is 47-96, but the range is 47:97.
             # This is coding_end-53 to coding_end-3.
-            return genome[self.chromosome][self.coding_end-53:self.coding_end-3].seq
+            return genome[self.chromosome][self.coding_end-(self.threeprime_homology_length+3):self.coding_end-3].seq
         elif self.strand=='-':
             # If on the reverse strand, the stop codon is at the gene start.
             # Similarly, if gene_start is 1, we want GFF positions 4-53.
             # In Python, this is 3-52, range 3:53, so coding_start+2:coding_start+52.
-            return genome[self.chromosome][self.coding_start+2:self.coding_start+52].reverse_complement().seq
+            return genome[self.chromosome][self.coding_start+2:self.coding_start+(self.threeprime_homology_length+2)].reverse_complement().seq
         else:
             return None
 
@@ -333,7 +364,11 @@ print(bac_header,    file=bacout)
 print(fosmid_header, file=fosmidout)
 
 for gene in genes:
-    gene_data = Gene(gene, genedb, bacs, fosmids, wells, args.num_results)
+    gene_data = Gene(gene, genedb, bacs, fosmids, wells, args.num_results, \
+                     args.fiveprime_flank_length, args.threeprime_flank_length, \
+                     args.fiveprime_utr_flank, args.threeprime_utr_flank, \
+                     args.fiveprime_homology_length, args.threeprime_homology_length)
+                     
     print(gene_data.print_plasmid("BAC"), file=bacout)
     print(gene_data.print_plasmid("Fosmid"), file=fosmidout)
 
