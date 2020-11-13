@@ -4,8 +4,6 @@ Developed by Tom Emrich-Mills and John W. Davey
 
 Associated manuscript: A recombineering pipeline to clone large and complex genes in Chlamydomonas, by Emrich-Mills et al. (2020)
 
-All files are available in the associated GitHub repository: https://github.com/TZEmrichMills/Chlamydomonas_recombineering
-
 ------
 
 FILES
