@@ -1,4 +1,4 @@
-This repository contains two sets of genome analysis tools for the manuscript ["A recombineering pipeline to clone large and complex genes in Chlamydomonas"](https://www.biorxiv.org/content/10.1101/2020.05.06.080416v1). The first is BACSearcher, a tool to facilitate easy recombineering of Chlamydomonas genes from the Chlamydomonas BAC library. The repository contains the BACSearcher python code plus two precursor files required to run the script. The second set contains short python scripts that can be used to convert or reformat output files from the bioinformatics tools Tandem Repeats Finder [(Benson, 1999)](https://www.ncbi.nlm.nih.gov/pubmed/9862982), WindowMasker from NCBI [(Morgulis et al., 2006)](https://www.ncbi.nlm.nih.gov/pubmed/16287941) and check_primers from Primer3 [(Rozen and Skaletsky, 2000)](https://www.ncbi.nlm.nih.gov/pubmed/10547847). All scripts have been tested with Chlamydomonas-specific datasets and may require some editing to become more widely applicable. 
+This repository contains the supplemental code for the manuscript ["A recombineering pipeline to clone large and complex genes in Chlamydomonas"](https://www.biorxiv.org/content/10.1101/2020.05.06.080416v1). Two sets of genome analysis tools are provided. The first is BACSearcher, a tool to facilitate easy recombineering of Chlamydomonas genes from the Chlamydomonas BAC library. The repository contains the BACSearcher python code plus two precursor files required to run the script. The second set contains short python scripts that can be used to convert or reformat output files from the bioinformatics tools Tandem Repeats Finder [(Benson, 1999)](https://www.ncbi.nlm.nih.gov/pubmed/9862982), WindowMasker from NCBI [(Morgulis et al., 2006)](https://www.ncbi.nlm.nih.gov/pubmed/16287941) and check_primers from Primer3 [(Rozen and Skaletsky, 2000)](https://www.ncbi.nlm.nih.gov/pubmed/10547847). Also included is a script for generating fasta sequence files and positional information for Chlamydomonas nuclear genes based on sequence data from the reference genome hosted on [Phytozome](https://phytozome.jgi.doe.gov/pz/portal.html#). All scripts have been tested with Chlamydomonas-specific datasets and may require some editing to become more widely applicable. 
 
 
 # 1. BACSearcher
@@ -6,7 +6,7 @@ BACSearcher is a genome analysis python tool to facilitate easy recombineering o
 
 Developed by [John W. Davey](https://github.com/johnomics) and Tom Emrich-Mills
 
-Script: [BACSearcher.py](../master/BACSearcher.py) written by John W. Davey
+Script: [BACSearcher.txt](../master/SupplementalCode/BACSearcher.txt) written by John W. Davey
 
 ### 1.1. Function
 BACSearcher considers all or a subset of Chlamydomonas genes and provides three key pieces of information useful for recombineering a gene of interest using the pipeline detailed in Supplementary Method 1 of the associated manuscript:
@@ -40,7 +40,7 @@ Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii
 ### 1.4. Required precursor files
 - Precursor file I
 
-  TSV file containing the coordinates of the start and end of each valid BAC in the library. The file contains start and end coordinates for all valid BACs and fosmids within the Chlamydomonas BAC library, as well as the lengths of each. BACs are identified by a PTQ number and fosmids are identified by a VTP number. Plasmids are defined as valid if their start and end sequences are mapped to the same chromosome, with one end mapped to the sense strand and the other to the anti-sense strand. These criteria exclude 3179 of the 11,676 BACs (27.2%) and 20,696 of the 56,276 fosmids (36.8%) that are annotated against the Chlamydomonas genome (v5.5). Due to the way the BACs have been annotated against the genome, some valid plasmids have more than two ends mapped to the same chromosome and so are represented more than once. This file is provided in the repository as [BACs_fosmids.pairs.tsv](../master/BACs_fosmids.pairs.tsv).
+  TSV file containing the coordinates of the start and end of each valid BAC in the library. The file contains start and end coordinates for all valid BACs and fosmids within the Chlamydomonas BAC library, as well as the lengths of each. BACs are identified by a PTQ number and fosmids are identified by a VTP number. Plasmids are defined as valid if their start and end sequences are mapped to the same chromosome, with one end mapped to the sense strand and the other to the anti-sense strand. These criteria exclude 3179 of the 11,676 BACs (27.2%) and 20,696 of the 56,276 fosmids (36.8%) that are annotated against the Chlamydomonas genome (v5.5). Due to the way the BACs have been annotated against the genome, some valid plasmids have more than two ends mapped to the same chromosome and so are represented more than once. This file is provided in the repository as [BACs_fosmids.pairs.tsv](../master/SupplementalCode/BACs_fosmids.pairs.tsv).
 - Precursor file II <code>*</code>
 
   Zipped FASTA file (Creinhardtii_281_v5.0.fa.gz) containing the gene sequences for all Chlamydomonas nuclear genes. This file is not provided in the repository and can be downloaded from [Phytozome](https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=Phytozome)>PhytozomeV12>Creinhardtii>assembly.
@@ -52,7 +52,7 @@ Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii
   TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by `-o` (see Example usage, above).
 - Precursor file V
 
-  TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the repository as [BAC_wells.txt](../master/BAC_wells.txt).
+  TXT file containing the plate and well coordinates of each BAC in the library, in the format ‘A-B-C’, where A is the plate number, B the row number and C the column number. This file is provided in the repository as [BAC_wells.txt](../master/SupplementalCode/BAC_wells.txt).
 - *Precursor file VI (Optional)*
 
   DB file generated from III using the BACSearcher script, which can be used in place of III in future runs. 
@@ -101,13 +101,13 @@ Developed by Tom Emrich-Mills
 
 ### 2.1. Tandem Repeats Finder output sorter
 Python script intended for processing the output information produced by Tandem Repeats Finder [(Benson, 1999)](https://www.ncbi.nlm.nih.gov/pubmed/9862982) into CSV format. 
-Usage instructions are included at the top of the script: [TRF-output-sorter.py](../master/TRF-output-sorter.py)
+Usage instructions are included at the top of the script: [TRF-output-sorter.py](../master/SupplementalCode/TRF-output-sorter.py)
 
 ### 2.2. Primer3 check_primers output sorter
 Python script intended to enable quick analysis of the output from the Primer3 check_primers module [(Rozen and Skaletsky, 2000)](https://www.ncbi.nlm.nih.gov/pubmed/10547847). 
-Usage instructions are included at the top of the script: [Check_primers-output-sorter.py](../master/Check_primers-output-sorter.py)
+Usage instructions are included at the top of the script: [Check_primers-output-sorter.py](../master/SupplementalCode/Check_primers-output-sorter.py)
 
 ### 2.3. WindowMasker output sorter
 Python script intended for counting the number of repeat sequences masked by WindowMasker [(Morgulis et al., 2006)](https://www.ncbi.nlm.nih.gov/pubmed/16287941).
-The script takes the interval TXT file produced by WindowMasker and outputs a CSV file containing the number or repeats per input sequence. Usage instructions are included at the top of the script: [WindowMasker-output-sorter.py](../master/WindowMasker-output-sorter.py)
+The script takes the interval TXT file produced by WindowMasker and outputs a CSV file containing the number or repeats per input sequence. Usage instructions are included at the top of the script: [WindowMasker-output-sorter.py](../master/SupplementalCode/WindowMasker-output-sorter.py)
 
