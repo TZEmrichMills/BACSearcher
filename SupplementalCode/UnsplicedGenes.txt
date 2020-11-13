@@ -1,0 +1,261 @@
+#!/usr/bin/env python3
+
+"""
+UnsplicedGenes
+@author John W. Davey & Tom Emrich-Mills
+Associated GitHub repository: https://github.com/TZEmrichMills/Chlamydomonas_recombineering
+For additional usage information, see Supplemental Method 2 or README.md in the repository.
+
+Usage:
+
+UnsplicedGenes can be initiated from the command line using options  -f, -g, -l and -o.
+Default usage example:
+
+./UnsplicedGenes.py -f Creinhardtii_281_v5.0.fa.gz -g Creinhardtii_281_v5.5.gene.gff3.gz -l Gene_shortlist.txt -o Results
+
+Creinhardtii_281_v5.0.fa.gz refers to precursor file I; 
+Creinhardtii_281_v5.5.gene.gff3.gz refers to precursor file II; 
+Gene_shortlist.txt refers to precursor file III.
+Results is an output file name. 
+
+Precursor files:
+
+Precursor file I: Zipped FASTA file (.fa.gz extension) containing the gene sequences for all Chlamydomonas nuclear genes.
+Precursor file II: Zipped GFF file (.gff3.gz extension) containing version 5.5 annotation information for the Chlamydomonas genome.
+Precursor file III(Optional) TXT file containing the Cre IDs for all genes of interest to be processed, one per line, each appended with ‘.v5.5’. If this file is not provided, BACSearcher will process all nuclear genes and produce a TSV file of the results with the name specified by -o (see Example usage, above).
+Precursor file IV Optional) DB file generated from II during the first running of the script, which can be used in place of II in future runs. 
+
+I and II are supplied in the Supplemental Code folder and were downloaded from Phytozome V12 entitled Creinhardtii_281_v5.0.fa.gz and Creinhardtii_281_v5.5.gene.gff3.gz. 
+
+Note: When supplied with a GFF file via -g, BACSearcher will generate a gffutils database for the GFF file (precursor file IV). 
+BACSearcher can also use this database directly with the -d option, saving the effort of regenerating the database.
+
+"""
+
+import argparse, os, sys, gzip
+import gffutils
+from Bio import Seq
+from Bio import SeqIO
+from Bio import SeqUtils
+from Bio.SeqUtils import GC
+from Bio.Seq import Seq
+
+parser=argparse.ArgumentParser(description='''
+    -g genegff
+    -d genedb
+    -l genelist
+    -o outputstub
+    -f genome FASTA
+    -n num_results
+    -q fiveprime_homology_length
+    -r threeprime_homology_length
+    -s fiveprime_flank length
+    -t threeprime_flank_length
+    -u fiveprime_utr_flank
+    -v threeprime_utr_flank
+    ''')
+
+parser.add_argument('-f', '--genomefasta', type=str, required=True)
+parser.add_argument('-g', '--genegff', type=str)
+parser.add_argument('-d', '--genedatabase', type=str)
+parser.add_argument('-l', '--genelist', type=str)
+parser.add_argument('-n', '--num_results', type=int, default=5)
+parser.add_argument('-q', '--fiveprime_homology_length', type=int, default=50)
+parser.add_argument('-r', '--threeprime_homology_length', type=int, default=50)
+parser.add_argument('-s', '--fiveprime_flank_length', type=int, default=3000)
+parser.add_argument('-t', '--threeprime_flank_length', type=int, default=0)
+parser.add_argument('-u', '--fiveprime_utr_flank', action='store_true')
+parser.add_argument('-v', '--threeprime_utr_flank', action='store_true')
+parser.add_argument('-o', '--outputstub', type=str, default="test")
+
+args = parser.parse_args()
+
+def load_annotation(gfffile, database):
+    db_filename = None
+    if database is not None:
+        if os.path.isfile(database):
+            db_filename = database
+        else:
+            print(f"Database {database} does not exist", file=sys.stderr)
+    elif gfffile is not None:
+        print(f"Loading annotation {gfffile} into database", file=sys.stderr)
+        new_db_filename = gfffile + '.db'
+        if os.path.isfile(new_db_filename):
+            print(f"Annotation database {new_db_filename} already exists", file=sys.stderr)
+        else:
+            db = gffutils.create_db(gfffile, new_db_filename)
+        db_filename = new_db_filename
+    
+    if db_filename is None:
+        print("Please supply one of -g and -d for gene annotation and one of -a and -b for BAC annotation", file=sys.stderr)
+        sys.exit()
+    
+    print(f"Loading annotation database {db_filename}")
+    db = gffutils.FeatureDB(db_filename)
+    
+    return db, db_filename
+
+class Gene:
+    def __init__(self, gene_name, gene_db, num_results, \
+                 fiveprime_flank_length, threeprime_flank_length, \
+                 fiveprime_utr_flank, threeprime_utr_flank):
+
+        self.gene_name = gene_name
+        self.gene     = gene_db[self.gene_name]
+        self.chromosome = self.gene.seqid
+        self.strand = self.gene.strand
+        self.num_results = num_results
+        self.fiveprime_flank_length = fiveprime_flank_length
+        self.threeprime_flank_length = threeprime_flank_length
+        self.fiveprime_utr_flank = fiveprime_utr_flank
+        self.threeprime_utr_flank = threeprime_utr_flank
+
+        self.coding_start, self.coding_end, self.flank_start, self.flank_end = self.__get_location(gene_db)
+        
+        self.coding_region = self.__get_coding_region()
+        self.fiveUTR_region = self.__get_fiveUTR_region()
+        self.threeUTR_region = self.__get_threeUTR_region()
+
+    def __get_location(self, gene_db):
+        coding_start = coding_end = flank_start = flank_end = None
+
+        for cds in gene_db.children(self.gene_name, featuretype="CDS"):
+            if coding_start is None or cds.start < coding_start:
+                coding_start = cds.start
+            if coding_end is None or cds.end > coding_end:
+                coding_end = cds.end
+        
+        start_anchor, end_anchor = coding_start, coding_end
+        if self.fiveprime_utr_flank:
+            start_anchor = self.gene.start
+        if self.threeprime_utr_flank:
+            end_anchor = self.gene.end
+
+        if self.strand == '+':
+            flank_start, flank_end = start_anchor - self.fiveprime_flank_length, end_anchor + self.threeprime_flank_length
+        elif self.strand == '-':
+            flank_start, flank_end = start_anchor - self.threeprime_flank_length, end_anchor + self.fiveprime_flank_length
+        
+        if flank_start < 1:
+            flank_start = 1
+
+        if flank_end > len(genome[self.chromosome]):
+            flank_end = len(genome[self.chromosome])
+
+        return coding_start, coding_end, flank_start, flank_end
+
+    def __get_coding_region(self):
+        if self.strand=='+':
+            return genome[self.chromosome][self.coding_start-1:self.coding_end].seq
+        elif self.strand=='-':
+            return genome[self.chromosome][self.coding_start-1:self.coding_end].reverse_complement().seq
+        else:
+            return None
+        
+    def __get_fiveUTR_region(self):
+        if self.strand=='+':
+            return genome[self.chromosome][self.gene.start-1:self.coding_start-1].seq
+        elif self.strand=='-':
+            return genome[self.chromosome][self.coding_end:self.gene.end].reverse_complement().seq
+        else:
+            return None
+        
+    def __get_threeUTR_region(self):
+        if self.strand=='+':
+            return genome[self.chromosome][self.coding_end:self.gene.end].seq
+        elif self.strand=='-':
+            return genome[self.chromosome][self.gene.start-1:self.coding_start-1].reverse_complement().seq
+        else:
+            return None
+
+    def print_details(self):
+        output = f"{self.gene_name}\t{self.chromosome}\t{self.strand}\t{self.gene.start}\t{self.gene.end}\t{abs(self.gene.end-self.gene.start)+1}"
+        
+        if self.strand=='+':
+            output += f"\t{self.gene.start}\t{self.coding_start-1}"
+        elif self.strand=='-':
+            output += f"\t{self.gene.end}\t{self.coding_end+1}"
+        
+        output += f"\t{len(self.fiveUTR_region)}"        
+        
+        if self.strand=='+':
+            output += f"\t{self.coding_start}\t{self.coding_end}"
+        elif self.strand=='-':
+            output += f"\t{self.coding_end}\t{self.coding_start}"    
+            
+        output += f"\t{len(self.coding_region)}"            
+            
+        if self.strand=='+':
+            output += f"\t{self.coding_end+1}\t{self.gene.end}"
+        elif self.strand=='-':
+            output += f"\t{self.coding_start-1}\t{self.gene.start}"
+        
+        output += f"\t{len(self.threeUTR_region)}" 
+        
+        return output
+
+    def print_full(self):
+        output = ">"
+        output += f"{self.gene_name}\n{self.fiveUTR_region+self.coding_region+self.threeUTR_region}"
+        return output
+    
+    def print_ATGStop(self):
+        output = ">"
+        output += f"{self.gene_name}\n{self.coding_region}"
+        return output
+    
+    def print_fiveUTR(self):
+        output = ">"
+        output += f"{self.gene_name}\n{self.fiveUTR_region}"
+        return output
+    
+    def print_threeUTR(self):
+        output = ">"
+        output += f"{self.gene_name}\n{self.threeUTR_region}"
+        return output
+
+print(f"Loading genome sequence {args.genomefasta}", file=sys.stderr)
+genome = SeqIO.to_dict(SeqIO.parse(gzip.open(args.genomefasta, "rt"), 'fasta'))
+
+print(f"Loading gene list {args.genelist}", file=sys.stderr)
+genes = []
+if args.genelist:
+    with open(args.genelist, 'r') as gl:
+        for line in gl:
+            genes.append(line.strip())
+
+genedb, genedb_filename = load_annotation(args.genegff, args.genedatabase)
+
+if not genes:
+    for gene in genedb.features_of_type('gene'):
+        genes.append(gene.id)
+
+genes = sorted(genes, key=lambda x: (genedb[x].seqid.split('_')[0], int(genedb[x].seqid.split('_')[1]), genedb[x].start))
+
+print(f"Processing {len(genes)} genes of interest...", file=sys.stderr)
+
+plainout = open(args.outputstub + ".details.tsv", 'w')
+seqout = open(args.outputstub + ".FullSeq.txt", 'w')
+fiveout = open(args.outputstub + ".5'UTR.txt", 'w')
+cdsout = open(args.outputstub + ".ATG-Stop.txt", 'w')
+threeout = open(args.outputstub + ".3'UTR.txt", 'w')
+
+header = "GeneID\tChromosome\tStrand\tGene_start\tGene_end\tGene_len\t5'UTR_start\t5'UTR_end\t5'UTR_len" + \
+        "\tATG-Stop_start\tATG-Stop_end\tATG-Stop_len\t3'UTR_start\t3'UTR_end\t3'UTR_len"
+
+print(header, file=plainout)
+
+for gene in genes:
+    gene_data = Gene(gene, genedb, args.num_results, \
+                     args.fiveprime_flank_length, args.threeprime_flank_length, \
+                     args.fiveprime_utr_flank, args.threeprime_utr_flank)
+
+    print(gene_data.print_details(), file=plainout)
+    print(gene_data.print_full(), file=seqout)
+    print(gene_data.print_fiveUTR(), file=fiveout)
+    print(gene_data.print_ATGStop(), file=cdsout)
+    print(gene_data.print_threeUTR(), file=threeout)    
+    
+
+
+plainout.close()
