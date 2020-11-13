@@ -41,10 +41,10 @@ Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii
 - Precursor file I
 
   TSV file containing the coordinates of the start and end of each valid BAC in the library. The file contains start and end coordinates for all valid BACs and fosmids within the Chlamydomonas BAC library, as well as the lengths of each. BACs are identified by a PTQ number and fosmids are identified by a VTP number. Plasmids are defined as valid if their start and end sequences are mapped to the same chromosome, with one end mapped to the sense strand and the other to the anti-sense strand. These criteria exclude 3179 of the 11,676 BACs (27.2%) and 20,696 of the 56,276 fosmids (36.8%) that are annotated against the Chlamydomonas genome (v5.5). Due to the way the BACs have been annotated against the genome, some valid plasmids have more than two ends mapped to the same chromosome and so are represented more than once. This file is provided in the repository as [BACs_fosmids.pairs.tsv](../master/BACs_fosmids.pairs.tsv).
-- Precursor file II	
+- Precursor file II *
 
   Zipped FASTA file (Creinhardtii_281_v5.0.fa.gz) containing the gene sequences for all Chlamydomonas nuclear genes. This file is not provided in the repository and can be downloaded from [Phytozome](https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=Phytozome)>PhytozomeV12>Creinhardtii>assembly.
-- Precursor file III
+- Precursor file III *
 
   Zipped GFF file (Creinhardtii_281_v5.5.gene.gff3.gz) containing version 5.5 annotation information for the Chlamydomonas genome. This file is not provided in the repository and can be downloaded from [Phytozome](https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=Phytozome)>PhytozomeV12>Creinhardtii>annotation.
 - *Precursor file IV (Optional)*
@@ -57,7 +57,7 @@ Where `BACs_fosmids.pairs.tsv` refers to precursor file I (below); `Creinhardtii
 
   DB file generated from III using the BACSearcher script, which can be used in place of III in future runs. 
 
-Genome FASTA and gene annotation GFF files (precursors II and III) are available for download from Phytozome, entitled Creinhardtii_281_v5.0.fa.gz and Creinhardtii_281_v5.5.gene.gff3.gz. The output provided in Supplemental Data Set 1 of the associated manuscript used precursor files II and III downloaded from [Phytozome V12](https://phytozome.jgi.doe.gov/pz/portal.html). 
+<code>*</code> Genome FASTA and gene annotation GFF files (precursors II and III) are available for download from Phytozome, entitled Creinhardtii_281_v5.0.fa.gz and Creinhardtii_281_v5.5.gene.gff3.gz. The output provided in Supplemental Data Set 1 of the associated manuscript used precursor files II and III downloaded from [Phytozome V12](https://phytozome.jgi.doe.gov/pz/portal.html). 
 
 When supplied with a GFF file via `-g`, BACSearcher will generate a gffutils database for the GFF file (precursor file VI). BACSearcher can also use this database directly with the `-d` option, saving the effort of regenerating the database.
 
